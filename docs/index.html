@@ -430,7 +430,7 @@ con este chuck</p>
 <pre><code>## Warning: restored &#39;rlang&#39;</code></pre>
 <pre><code>## 
 ## The downloaded binary packages are in
-##  C:\Users\felip\AppData\Local\Temp\Rtmp6bqgZ6\downloaded_packages</code></pre>
+##  C:\Users\felip\AppData\Local\Temp\RtmpqEQf1C\downloaded_packages</code></pre>
 <pre class="r"><code>install.packages(&quot;dplyr&quot;,
                  repos = c(&quot;http://rstudio.org/_packages&quot;,
                            &quot;http://cran.rstudio.com&quot;))</code></pre>
@@ -438,10 +438,16 @@ con este chuck</p>
 ## (as &#39;lib&#39; is unspecified)</code></pre>
 <pre><code>## Warning: unable to access index for repository http://rstudio.org/_packages/bin/windows/contrib/4.2:
 ##   no fue posible abrir la URL &#39;http://rstudio.org/_packages/bin/windows/contrib/4.2/PACKAGES&#39;</code></pre>
-<pre><code>## package &#39;dplyr&#39; successfully unpacked and MD5 sums checked
-## 
+<pre><code>## package &#39;dplyr&#39; successfully unpacked and MD5 sums checked</code></pre>
+<pre><code>## Warning: cannot remove prior installation of package &#39;dplyr&#39;</code></pre>
+<pre><code>## Warning in file.copy(savedcopy, lib, recursive = TRUE): problema al copiar C:
+## \Users\felip\AppData\Local\R\win-library\4.2\00LOCK\dplyr\libs\x64\dplyr.dll
+## a C:\Users\felip\AppData\Local\R\win-library\4.2\dplyr\libs\x64\dplyr.dll:
+## Permission denied</code></pre>
+<pre><code>## Warning: restored &#39;dplyr&#39;</code></pre>
+<pre><code>## 
 ## The downloaded binary packages are in
-##  C:\Users\felip\AppData\Local\Temp\Rtmp6bqgZ6\downloaded_packages</code></pre>
+##  C:\Users\felip\AppData\Local\Temp\RtmpqEQf1C\downloaded_packages</code></pre>
 <pre class="r"><code>#remove.packages(&quot;rlang&quot;)
 #remove.packages(&quot;dplyr&quot;)
 
@@ -1208,12 +1214,12 @@ summary(regr3)</code></pre>
 ##  -4201  -1800    -65   1698   4690 
 ## 
 ## Coefficients:
-##                            Estimate              Std. Error t value
-## (Intercept) 3396.680934932780019153   16.079509847679570811  211.24
-## attend_v      42.755308636001302602    1.869361486043107368   22.87
-## attend_m     114.365600355819978518    0.995354188436124332  114.90
-## edad          -0.000000000000520230    0.605783017016111813    0.00
-## edad_2         0.000000000000003869    0.006014672305862370    0.00
+##                           Estimate             Std. Error t value
+## (Intercept) 3396.68093493268816019   15.64456095902191279  217.12
+## attend_v      42.75530863600130260    1.86936148604310737   22.87
+## attend_m     114.36560035581997852    0.99535418843612433  114.90
+## edad           0.00000000000450546    0.58532848738591903    0.00
+## edad_2        -0.00000000000004408    0.00580079948993907    0.00
 ##                        Pr(&gt;|t|)    
 ## (Intercept) &lt;0.0000000000000002 ***
 ## attend_v    &lt;0.0000000000000002 ***
