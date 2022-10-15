@@ -1,0 +1,629 @@
+---
+title: "Laboratorio 1: Exploración de Datos y Regresión Lineal"
+subtitle: 'Fundamentos de la Analítica de Datos'
+author: "Felipe Catalan"
+date: "2022-10-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Objetivo y contexto
+
+El siguiente laboratorio tiene como objetivo aplicar técnicas de descripción estadísticas y regresión lineal.La base en la que se trabajará es *Movie.xlsx*, la que contiene datos sobre el número de agresiones y asistencia al cine para 518 fines de semanas. Esta base intenta responder a la pregunta, si **¿la violencia en el cine aumenta el crimen violento?**. 
+
+La metadata es:
+
+*assaults:* Número de asaltos e intimidación en Estados Unidos.
+
+*attend_v:* Asistencia a películas violentas (en millones).
+
+*attend_m:* Asistencia a películas con violencia media (en millones).
+
+*attend_n:* Asistencia a películas no violentas(en millones).
+
+*year1:* Variable dummy que indica los años de la muestra en estudio (1995-2004).
+
+*month1:* Variable dummy que indica los meses del año (enero-diciembre).
+
+*h_chris:* Variable dummy que indica el fin de semana de navidad (1 es que sí).
+
+*h_newyr:* Variable dummy que indica el fin de semana de año nuevo (1 es que sí).
+
+*h_easter:* Variable dummy que indica el fin de semana de semana santa (1 es que sí).
+
+*h_july4:* Variable dummy que indica el fin de semana del 4 de Julio (1 es que sí).
+
+*w_rain:* Franción de lugares con lluvia.
+
+*w_snow:* Franción de lugares con Nieve.
+
+*w_maxa:* Franción de lugares con una temperatura máxima diaria entre 80°F y 90°F.
+
+*w_maxb:* Franción de lugares con una temperatura máxima diaria entre 90°F y 100°F.
+
+*w_maxc:* Franción de lugares con una temperatura máxima diaria más de 100°F.
+
+*w_mina:* Franción de lugares con una temperatura mínima diaria entre 0° y 10 °F
+.
+*w_minb:* Franción de lugares con una temperatura mínima diaria entre 10° y 20 °F.
+
+*w_minc:* Franción de lugares con una temperatura mínima diaria entre 20° y 30 °F
+
+## Carga de base y librerías a utilizar
+
+### Librerías
+Se presentaron problemas con ggplot2 los cuales fueron solucionados con este chuck
+```{r}
+install.packages("rlang",
+                 repos = c("http://rstudio.org/_packages",
+                           "http://cran.rstudio.com"))
+
+```
+
+```{r}
+install.packages("dplyr",
+                 repos = c("http://rstudio.org/_packages",
+                           "http://cran.rstudio.com"))
+```
+
+```{r}
+#remove.packages("rlang")
+#remove.packages("dplyr")
+
+#install.packages("rlang")
+#install.packages("dplyr")
+
+library("rlang")
+library("dplyr")
+```
+
+
+```{r}
+#install.packages("ggplot2")
+#install.packages("ggpubr")
+#install.packages("corrplot")
+#install.packages("dplyr")
+#install.packages("tidyverse")
+#install.packages("readr")
+
+
+library("ggplot2")
+library("ggpubr")
+library("corrplot")
+library("dplyr")
+library("tidyverse")
+library("readr")
+```
+
+### Cargar base
+
+```{r}
+setwd("~/GitHub/Laboratorio_1")
+db <- readxl::read_xlsx("Movies.xlsx")
+```
+
+### Arreglo formato fecha
+```{r}
+#Data con formato incomodo.
+#Creando variable anio
+db$year1 <- gsub("1","1995",db$year1)
+db$year2 <- gsub("1","1996",db$year2)
+db$year3 <- gsub("1","1997",db$year3)
+db$year4 <- gsub("1","1998",db$year4)
+db$year5 <- gsub("1","1999",db$year5)
+db$year6 <- gsub("1","2000",db$year6)
+db$year7 <- gsub("1","2001",db$year7)
+db$year8 <- gsub("1","2002",db$year8)
+db$year9 <- gsub("1","2003",db$year9)
+db$year10 <- gsub("1","2004",db$year10)
+
+db$year1 <- as.numeric(db$year1)
+db$year2 <- as.numeric(db$year2)
+db$year3 <- as.numeric(db$year3)
+db$year4 <- as.numeric(db$year4)
+db$year5 <- as.numeric(db$year5)
+db$year6 <- as.numeric(db$year6)
+db$year7 <- as.numeric(db$year7)
+db$year8 <- as.numeric(db$year8)
+db$year9 <- as.numeric(db$year9)
+db$year10 <- as.numeric(db$year10)
+
+db <- unite(db,anio,c(year1,year2,year3,year4,year5,year6,year7,year8,year9,year10))
+
+db$anio <- gsub("1995_0_0_0_0_0_0_0_0_0","1995",db$anio)
+db$anio <- gsub("0_1996_0_0_0_0_0_0_0_0","1996",db$anio)
+db$anio <- gsub("0_0_1997_0_0_0_0_0_0_0","1997",db$anio)
+db$anio <- gsub("0_0_0_1998_0_0_0_0_0_0","1998",db$anio)
+db$anio <- gsub("0_0_0_0_1999_0_0_0_0_0","1999",db$anio)
+db$anio <- gsub("0_0_0_0_0_2000_0_0_0_0","2000",db$anio)
+db$anio <- gsub("0_0_0_0_0_0_2001_0_0_0","2001",db$anio)
+db$anio <- gsub("0_0_0_0_0_0_0_2002_0_0","2002",db$anio)
+db$anio <- gsub("0_0_0_0_0_0_0_0_2003_0","2003",db$anio)
+db$anio <- gsub("0_0_0_0_0_0_0_0_0_2004","2004",db$anio)
+
+# Variable mes
+db$month1 <- gsub("1","01",db$month1)
+db$month2 <- gsub("1","02",db$month2)
+db$month3 <- gsub("1","03",db$month3)
+db$month4 <- gsub("1","04",db$month4)
+db$month5 <- gsub("1","05",db$month5)
+db$month6 <- gsub("1","06",db$month6)
+db$month7 <- gsub("1","07",db$month7)
+db$month8 <- gsub("1","08",db$month8)
+db$month9 <- gsub("1","09",db$month9)
+db$month10 <- gsub("1","10",db$month10)
+db$month11 <- gsub("1","11",db$month11)
+db$month12 <- gsub("1","12",db$month12)
+
+db <- unite(db,Mes,c(month1,month2,month3,month4,month5,month6,month7,month8,month9,
+                     month10,month11,month12))
+
+db$Mes <- gsub("01_0_0_0_0_0_0_0_0_0_0_0","01-01",db$Mes)
+db$Mes <- gsub("0_02_0_0_0_0_0_0_0_0_0_0","01-02",db$Mes)
+db$Mes <- gsub("0_0_03_0_0_0_0_0_0_0_0_0","01-03",db$Mes)
+db$Mes <- gsub("0_0_0_04_0_0_0_0_0_0_0_0","01-04",db$Mes)
+db$Mes <- gsub("0_0_0_0_05_0_0_0_0_0_0_0","01-05",db$Mes)
+db$Mes <- gsub("0_0_0_0_0_06_0_0_0_0_0_0","01-06",db$Mes)
+db$Mes <- gsub("0_0_0_0_0_0_07_0_0_0_0_0","01-07",db$Mes)
+db$Mes <- gsub("0_0_0_0_0_0_0_08_0_0_0_0","01-08",db$Mes)
+db$Mes <- gsub("0_0_0_0_0_0_0_0_09_0_0_0","01-09",db$Mes)
+db$Mes <- gsub("0_0_0_0_0_0_0_0_0_10_0_0","01-10",db$Mes)
+db$Mes <- gsub("0_0_0_0_0_0_0_0_0_0_11_0","01-11",db$Mes)
+db$Mes <- gsub("0_0_0_0_0_0_0_0_0_0_0_12","01-12",db$Mes)
+
+# Variable Fecha
+db <- unite(db,Fecha,sep = "-",c(Mes,anio))
+
+db$Fecha <- as.Date(as.character(db$Fecha),format = "%d-%m-%Y")
+
+```
+
+## Utilizando la base en estudio responda las siguientes preguntas:
+
+### 1. Genere una tabla (data frame) resumiendo las estadísticas relevantes de las variables(*hint:al menos que incluya media, moda, desviación,número de observaciones etc, según correponda al tipo de variable*). Explique estos resultados indicando algún análisis que se pueda extraer desde acá.(3 ptos)
+
+```{r}
+## La variable "attend_v" cuenta con valores inf = infinito o indefinido, los que 
+## se dejaran fuera para el calculo de los estadisticos
+
+# borrar valores inf
+db_1 <- db[!db$attend_v=="inf", ]
+
+# notacion cientifica en caracteres
+options(scipen=999) # eliminar la notación cientifica
+
+#Tranformo a numeri la variable faltante
+db_1$attend_v <- as.numeric(db_1$attend_v)
+class(db_1$attend_v)
+db_1 <- as.data.frame(db_1)
+
+# Selecciono variables relevantes
+names(db_1)
+db_Vrelevantes <- db_1[,c(2,3,4,5)]
+
+# borro datos que ensucian la interpretacion.
+db_Vrelevantes <- db_Vrelevantes[!db_Vrelevantes$assaults>12000, ]
+db_Vrelevantes <- db_Vrelevantes[!db_Vrelevantes$assaults<0, ]
+
+#Mediana
+Q50_assaults <- median(db_Vrelevantes$assaults)
+Q50_attend_v <- median(db_Vrelevantes$attend_v)
+Q50_attend_m <- median(db_Vrelevantes$attend_m)
+Q50_attend_n <- median(db_Vrelevantes$attend_n)
+
+#Media
+Media_assaults <- mean(db_Vrelevantes$assaults)
+Media_attend_v <- mean(db_Vrelevantes$attend_v)
+Media_attend_m <- mean(db_Vrelevantes$attend_m)
+Media_attend_n <- mean(db_Vrelevantes$attend_n)
+
+#Moda
+Moda_assaults <- as.numeric(names(which.max(table(db_Vrelevantes$assaults))))
+
+db_Vrelevantes_2 <- db_Vrelevantes[!db_Vrelevantes$attend_v==0, ]
+
+Moda_attend_v <- as.numeric(names(which.max(table(db_Vrelevantes_2$attend_v))))
+Moda_attend_m <- as.numeric(names(which.max(table(db_Vrelevantes$attend_m))))
+Moda_attend_n <- as.numeric(names(which.max(table(db_Vrelevantes$attend_n))))
+
+#Desviacion
+sd_assaults <- sd(db_Vrelevantes$assaults)
+sd_attend_v <- sd(db_Vrelevantes$attend_v)
+sd_attend_m <- sd(db_Vrelevantes$attend_m)
+sd_attend_n <- sd(db_Vrelevantes$attend_n)
+
+#N° de observaciones
+N_assaults <- sum(count(db_Vrelevantes, assaults)[,c(2)])
+N_attend_m <- sum(count(db_Vrelevantes, attend_m)[,c(2)])
+N_attend_n <- sum(count(db_Vrelevantes, attend_n)[,c(2)])
+db_Vrelevantes_1 <- db_Vrelevantes %>% 
+    group_by(attend_v) %>%
+    count(attend_v)
+db_Vrelevantes_1 <- db_Vrelevantes_1[db_Vrelevantes_1$attend_v>0,]
+N_attend_v <- sum(db_Vrelevantes_1[,c(2)])
+
+#Cantidad de variables dummy
+names(db)
+N_h_chris <- sum(db$h_chris)
+N_h_newyr <- sum(db$h_newyr)
+N_h_easter <- sum(db$h_easter)
+N_h_july4 <- sum(db$h_july4)
+N_h_labor <- sum(db$h_labor)
+
+Tabla_resumen_1 <- data.frame("Variable"=c("assaults","attend_v","attend_m",
+                                          "attend_n","h_chris","h_newyr","h_easter","h_july4","h_labor"),
+                              "Mediana"=c(Q50_assaults,Q50_attend_v,Q50_attend_m,
+                                          Q50_attend_n,0,0,0,0,0),
+                              "Media"=c(Media_assaults,Media_attend_v,
+                                        Media_attend_m,Media_attend_n,0,0,0,0,0),
+                              "Moda"=c(Moda_assaults,Moda_attend_v,
+                                       Moda_attend_m,Moda_attend_n,0,0,0,0,0),
+                              "Desviacion"= c(sd_assaults,sd_attend_v,sd_attend_m,sd_attend_n,0,0,0,0,0),
+                              "N_obs"= c(N_assaults,N_attend_v,N_attend_m,
+                                         N_attend_n,N_h_chris,N_h_newyr,N_h_easter,
+                                         N_h_july4,N_h_labor))
+
+
+Tabla_resumen_1
+```
+
+Del resumen estadístico obtenido podemos concluir que tanto en promedio como por mediana las películas mas vistas son las que no contienen violencia (8 millones aprox), seguidas de las que tienen violencia media (7 millones aprox) y por ultimo las películas violentas (2,5 millones aprox).
+Podemos agregar que las distribuciones de las 4 variables mas importantes tienen sesgo positivo dado que la media es mayor a la moda.
+Y en cuanto a la desviación estándar podemos observar que la asistencia a las películas tiene variaciones de 2.2 4.2 y 3.9 millones, para las de violencia alta, media y baja respectivamente. Se puede decir que esta variación es alta y se puede asociar a que, dependiendo de otras variables como calidad, presupuesto u artistas, una película tendrá mayor o menor asistencia.
+Podemos observar también que el numero de asaltos o intimidaciones tiene una variabilidad muy alta, dado que varia en 2379 asaltos por fin de semana.
+
+### 2. ¿Qué semanas son las más frías y las más calurosas?¿ Respalde graficamente esta información?. Haga los supuestos que crea necesario.(1 pto)
+
+```{r}
+#rm(list = ls()) #Si borra corra de nuevo la solucion de las fechas.
+
+names(db_1)
+
+#selecciono columnas a usar
+db_2 <- db_1[,c(1,14,19,6,7,8,9)]
+
+# Semas mas frias
+db_21 <- db_2[!db_2$w_mina==0,]
+db_22 <- db_2[db_2$w_mina>=0.3,]
+
+# Fechas + columna ID puedo saber a que fin de semana corresponde
+Dfecha <- db_1[,c(1,19,6,7,8,9)]
+
+p <- ggplot(db_21,aes(x=Fecha, y =w_mina))+
+  geom_point(color="gray17", size=0.8, alpha=1)+
+  geom_smooth()+
+  theme_bw()+ 
+  scale_y_continuous(name = "Temperaturas minimas entre 0 y 10 F°",
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE),
+                     breaks = seq(0,0.6,0.1), lim = c(0,0.5))+
+  theme(
+    legend.position="none",
+    plot.title = element_text(size=20)
+  )+
+  ggtitle(label = "Evolución de la temperatura mínima")
+
+# Modificar las fechas para tener analisis anual
+min <- as.Date("1995/01/01")
+max <- as.Date("2004/12/01")
+
+p+scale_x_date(limits = c(min,max),breaks = seq(min,max,300),date_labels = "%Y/%m/%d")+
+  theme(axis.text.x = element_text(angle=45, hjust = 1))+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+```
+
+Las semanas más frías serán consideradas aquellas que tengan un porcentaje sobre el 30% de una temperatura mínima diaria entre 0 y 10 F°, estas las podemos encontrar en los años 95, 97 y 2004. De esta forma utilizando la construcción de la variable fecha y el ID que se asume esta ordenado se obtiene:
+
+49 = *2ra semana de 1995-12*
+
+53 = *1era semana 1996-01*
+
+57 = *1era semana 1996-02*
+
+62 = *3era semana de 1996-03*
+
+106 = *2da semana de 1997-02*
+
+107 = *3da semana de 1997-02*
+
+474 = *última semana de 2004-01*
+```{r}
+print(db_22)
+```
+
+```{r}
+#selecciono columnas a usar
+db_3 <- db_1[,c(1,13,19,6,7,8,9)]
+names(db_3)
+ 
+# Semanas mas calurosas
+db_31 <- db_3[!db_3$w_maxc==0,]
+db_32 <- db_3[db_3$w_maxc>=0.17,]
+
+# Fechas + columna ID puedo saber a que fin de semana corresponde
+Dfecha <- db_1[,c(1,19,6,7,8,9)]
+
+p <- ggplot(db_31,aes(x=Fecha, y =w_maxc))+
+  geom_point(color="gray17", size=0.8, alpha=1)+
+  geom_smooth()+
+  theme_bw()+ 
+  scale_y_continuous(name = "Temperaturas máximas superiores a 100 F°",
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE),
+                     breaks = seq(0,0.4,0.05), lim = c(0,0.4))+
+  theme(
+    legend.position="none",
+    plot.title = element_text(size=20)
+  )+
+  ggtitle(label = "Evolución de la temperatura máxima")
+
+# Modificar las fechas para tener analisis anual
+min <- as.Date("1995/01/01")
+max <- as.Date("2004/12/01")
+
+p+scale_x_date(limits = c(min,max),breaks = seq(min,max,300),date_labels = "%Y/%m/%d")+
+  theme(axis.text.x = element_text(angle=45, hjust = 1))+
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+Las semanas más calurosas serán las 5 con porcentaje más alto con temperaturas máximas superiores a 100 F°. Estas las podemos encontrar en los años 95, 98, 99 y 2004. De esta forma utilizando la construcción de la variable fecha y el ID que se asume esta ordenado se obtiene:
+
+33 = *era semana 1995-08*
+
+187 = *ultima semana 1998-07*
+
+241 = *2da semana 1999-08*
+
+242 = *era semana 1999-08*
+
+399 = *penúltima semana 2002-08*
+```{r}
+print(db_32)
+```
+
+
+### 3. ¿Cuál o cualés serían las variables relevantes u objetivos para responder a la pregunta de  estudio? ¿y Por qué?(2 ptos)
+```{r}
+cat("Las variables mas importantes para responder la pregunta del estudio son: assaults, attend_v, attend_m, attend_n. Con estas variables ya se puede aceptar o rechazar la hipótesis ¿la violencia en el cine aumenta el crimen violento?\n\nEl resto de las variables pueden resultar importantes, si con las mencionadas anteriormente no encontrara una correlación significativamente alta. Dado que las variaciones del crimen violento se podrían explicar mejor por variables de festividades u estacionales. 
+")
+```
+
+### 4. Basado en lo anterior, identifique si existen outliers. Explique tratamiento de la información.(2 ptos)
+```{r}
+# assaults = 3 valores negativos y 3 valores demaciado altos, estos desvirtuan el analisis
+# y por lo tanto seran eliminados del mismo
+db_4_assaults <- db %>% 
+    group_by(assaults) %>%
+    count(assaults)
+
+# attend_v = 4 valores inf que pueden ser infinitos positivos o valores indefinidos.
+db_4_attend_v <- db %>% 
+    group_by(attend_v) %>%
+    count(attend_v)
+
+db_4_attend_m <- db %>% 
+    group_by(attend_m) %>%
+    count(attend_m)
+
+db_4_attend_n <- db %>% 
+    group_by(attend_n) %>%
+    count(attend_n)
+
+cat("De las variables relevantes assaults tiene 3 valores negativos y 3 valores demasiado altos, estos desvirtúan el análisis y por lo tanto serán eliminados. Además, no tiene sentido un numero de asaltos negativos o un momento del tiempo en estados unidos con un crecimiento tan alto de eventos de violencia, este tipo de suceso estaría documentado y no se encontró evidencia. Por lo tanto, se entienden como errores.\n\nAsimismo attend_v tiene 4 valores inf que pueden ser infinitos positivos o valores indefinidos, estos se eliminaran del análisis dado que no permiten darle formato numérico a la variable y ademas desvirtúan el análisis.")
+
+```
+
+### 5. Genere una matriz de correlaciones, con al menos 4 variables.*hint: incluya las que son el objetivo de estudio*. Explique los resultados.(2 ptos)
+```{r}
+# Selecciono formato numerico, en necesario correr pregunta 1
+db_Vrelevantes_2 <- db_Vrelevantes_2[db_Vrelevantes_2$assaults<12000,]
+db_1_correlacion <- db_Vrelevantes_2[,sapply(db_Vrelevantes_2, is.numeric)]
+names(db_1_correlacion)
+
+#Matriz de correlacion
+res <- cor(db_1_correlacion, use = "pairwise.complete.obs",
+method = "pearson")
+
+corrplot(res[,c(1:4)], type = "upper", method= "square", tl.col = "black",addCoef.col = 'black', col = COL2('BrBG'))
+
+```
+
+La matriz de correlación presentada de las 4 variables más importantes muestra la relación entre estas de 2 en 2. Se observa que assaults tiene su correlación más alta con attend_m, sin embargo, esta es del 0,22 lo que quiere decir que una variable explica a la otra en un 22%, Lo cual podría servir para un modelo de predicción. attend_v y attend_n tienen -0.014 y 0.06 respectivamente las cuales son relaciones muy bajas negativa y positiva. Sin embargo, podrían contribuir al modelo.
+
+Podemos empezar a intuir que las películas que contienen violencia no guardan relación con el numero de asaltos e intimidaciones.
+
+### 6. Genere tres gráficos de dispersión con la respectiva línea de tendencia, y determine si la correlación de estas variables es significativa.(3 ptos)
+
+```{r}
+#Grafico 1
+db_dispercion <- db_Vrelevantes_2
+
+
+sp <- ggscatter(db_dispercion, x = "assaults" , y = "attend_v",
+                add = "reg.line",  
+                add.params = list(color = "blue", fill = "lightgray"), 
+                conf.int = FALSE)
+sp+stat_cor(method = "pearson")+
+  theme_bw()+
+  scale_y_continuous(name = "Asistencia a películas violentas en millones",
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE),
+                     breaks = seq(0,13,1), lim = c(0,13)
+                     )+
+  scale_x_continuous(name = "Número de asaltos e intimidación en USA",
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE),
+                     breaks = seq(0,10000,1000), lim = c(500,9000)
+                     )+
+  theme(axis.text.x = element_text(angle=45, hjust = 1))
+```
+
+Dado que el p-valor no es menor a 0.05, No rechazo la nula y entonces no es posible afirmar que la correlación de assaults y attend_v es significativa
+
+```{r}
+#Grafico 2
+sp_2 <- ggscatter(db_dispercion, x = "assaults" , y = "attend_m",
+                add = "reg.line",  
+                add.params = list(color = "blue", fill = "lightgray"), 
+                conf.int = FALSE)
+sp_2+stat_cor(method = "pearson")+
+  theme_bw()+
+  scale_y_continuous(name = "Asistencia a películas con violencia media en millones",
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE),
+                     breaks = seq(0,25,2), lim = c(0,25)
+                     )+
+  scale_x_continuous(name = "Número de asaltos e intimidación en USA",
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE),
+                     breaks = seq(0,10000,1000), lim = c(500,9000)
+                     )+
+  theme(axis.text.x = element_text(angle=45, hjust = 1))
+
+```
+
+Dado que el p-valor es menor a 0.05, rechazo la nula y entonces es posible afirmar que la correlación de assaults y attend_m es significativa
+
+```{r}
+#Grafico 3
+sp_3 <- ggscatter(db_dispercion, x = "assaults" , y = "attend_n",
+                add = "reg.line",  
+                add.params = list(color = "blue", fill = "lightgray"), 
+                conf.int = FALSE)
+sp_3+stat_cor(method = "pearson")+
+  theme_bw()+
+  scale_y_continuous(name = "Asistencia a películas sin violencia en millones",
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE),
+                     breaks = seq(0,25,2), lim = c(0,25)
+                     )+
+  scale_x_continuous(name = "Número de asaltos e intimidación en USA",
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE),
+                     breaks = seq(0,10000,1000), lim = c(500,9000)
+                     )+
+  theme(axis.text.x = element_text(angle=45, hjust = 1))
+
+```
+
+Dado que el p-valor no es menor a 0.05, No rechazo la nula y entonces no es posible afirmar que la correlación de assaults y attend_n es significativa
+
+### 7. Escoja una de las variables en procentajes, explique por qué sería interesante incoporarla a este esudio.(1 pto)
+
+Ninguna de las variables climáticas que son las expresadas en porcentaje ayudaría mucho a dar respuesta a la pregunta del estudio, pero sería interesante Agregar la variable w_maxc, que indica la fracción de lugares con una temperatura diaria de mas de 100°F, algo así como 38° grados Celsius. Esto con la intención de demostrar como objetivo secundario que a mayores temperaturas disminuyen la cantidad de asaltos e intimidaciones. Se debería observar una correlación negativa.
+
+
+### 8. Genere un box plot que permita determinar si el fin de semana de navidad tiene influencia en el número de asaltos. Explique sus resultados.(2 ptos)
+
+```{r}
+names(db_1)
+
+db_pregunta8 <- db_1[!db_1$assaults>12000,]
+db_pregunta8 <- db_pregunta8[!db_pregunta8$assaults<0,]
+
+
+ggplot(db_pregunta8, aes(x=factor(h_chris), y=assaults)) + 
+  geom_boxplot(fill=c("seagreen","firebrick"),
+               color="black")+
+  scale_y_continuous(breaks = seq (from = 0, to = 20000, by = 500),
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE))+
+  coord_flip()+
+  theme_bw()+
+  labs(title = "Box-plot del fin de semana de navidad y el número de asaltos",
+       x = "Fin de semana de navidad (1)",
+       y = "Cantidad de asaltos")+
+  theme(axis.text.x = element_text(angle=45, hjust = 1))+
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+En el box plot presentado hay que establecer en 1er lugar que existe una cantidad mucho menor de fines de semana de navidad, las cuales se estan evaluando contra el resto de la muestra. Podemos decir que los fines de semana de navidad se observa una cantidad mucho menor de asaltos, dado que la mediana de los fines de semana de navidad esta casi al mismo nivel que el percentil 25 del resto de la muestra. También podemos mencionar que la dispersión de los datos es mucho mayor en los que no son fines de semana navoidad, aunque esto se debe a la gran diferencia en el tamaño de la muestra. Finalmente es destacable que el percentil 100 de los fines de semana de navidad no alcanza la mediana del resto de la muestra. 
+
+### 9. Genere un boxplot que muestre la distribución de asistencia a películas violentas por año. Explique sus resultados. (2 ptos)
+```{r}
+library("stringr")
+
+db_pregunta9 <- db_pregunta8
+db_pregunta9$Fecha <- as.character(db_pregunta9$Fecha)
+db_pregunta9$anio <- str_trunc(db_pregunta9$Fecha,7,"right")
+
+db_pregunta9_1 <- db_pregunta9 %>% 
+    group_by(anio) %>%
+    count(anio)
+
+db_pregunta9$anio <- gsub("1995...","1995",db_pregunta9$anio)
+db_pregunta9$anio <- gsub("1996...","1996",db_pregunta9$anio)
+db_pregunta9$anio <- gsub("1997...","1997",db_pregunta9$anio)
+db_pregunta9$anio <- gsub("1998...","1998",db_pregunta9$anio)
+db_pregunta9$anio <- gsub("1999...","1999",db_pregunta9$anio)
+db_pregunta9$anio <- gsub("2000...","2000",db_pregunta9$anio)
+db_pregunta9$anio <- gsub("2001...","2001",db_pregunta9$anio)
+db_pregunta9$anio <- gsub("2002...","2002",db_pregunta9$anio)
+db_pregunta9$anio <- gsub("2003...","2003",db_pregunta9$anio)
+db_pregunta9$anio <- gsub("2004...","2004",db_pregunta9$anio)
+
+
+names(db_pregunta9)
+head(db_pregunta9)
+
+ggplot(db_pregunta9, aes(x=factor(anio), y=attend_v, fill=factor(anio))) + 
+  geom_boxplot(color="black")+
+  scale_y_continuous(breaks = seq (from = 0, to = 12, by = 0.5),
+                     labels=function(x) format(x, big.mark = ".", scientific = FALSE),
+                     limits = c(0,12))+
+  coord_flip()+
+  theme_bw()+
+  labs(title = "Box-plot de la dispersión de las películas violentas por año en EEUU",
+       x = "Años del estudio",
+       y = "Cantidad de asaltos")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_fill_brewer("Años")+
+  theme(axis.text.x = element_text(angle=45, hjust = 1))
+
+```
+
+El box-plot presenta la dispersión de la asistencia a películas violentas en usa, podemos observar que en el año 1997 se observa la asistencia por mediana más alta y en el 2002 la mas baja. Podemos destacar también que para el año 2002 el percentil 75 no alcanza a llegar a la mediana de los años 1999 y 1997, los cuales por su mediana y percentil 75 parecen ser los años con mayor asistencia a películas violentas. Mientras tanto el año 1998 presenta la mayor dispersión de los datos y el año 1995 junto con el 2002 presentan la menor dispersión.
+
+### 10. Corra la siguiente regresión multiple, ¿Qué puede decir respecto a su R cuadrado?(1 pto)
+```{r}
+names(db_pregunta8)
+
+regr1 <- lm(assaults ~ attend_v+factor(h_july4), data = db_pregunta8, na.action = na.omit)
+summary(regr1)
+```
+
+Dado que es una regresión lineal con 2 variables explicativas o múltiple se usa el R cuadrado ajustado, dado que el Rcuadrado pierde grados de libertad y por lo tanto su valor queda sobreestimado. Podemos decir del R cuadrado ajustado que en suma la asistencia a películas violentas y la variable dummy de los fines de semana del 4 de julio explica de forma inversa en un 0.1786% a la variable numero de asaltos e intimidaciones en USA.
+
+### 11.Corra la siguiente regresión multiple, ¿ Qué puede decir respecto a su R cuadrado? (1 pto)
+```{r}
+regr2 <- lm(assaults ~ attend_v+attend_m+factor(h_july4), data = db_pregunta8, na.action = na.omit)
+summary(regr2)
+
+```
+
+Dado que es una regresión lineal con 2 variables explicativas o múltiple se usa el R cuadrado ajustado, dado que el Rcuadrado pierde grados de libertad y por lo tanto su valor queda sobreestimado. Podemos decir del R cuadrado ajustado que en suma la asistencia a películas violentas, de mediana violencia y la variable dummy de los fines de semana del 4 de julio, forman un modelo que explica de forma en un 4.395 % a la variable numero de asaltos e intimidaciones en USA.
+
+### 12. ¿Cuál de los dos modelos anteriores es mejor (pregunta 10 y 11)? ¿Por qué? (1 pto)
+
+El modelo de la pregunta 11 es mejor porque explica mucho mas el comportamiento de la variable número de asaltos e intimidaciones en USA, además el p valor nos indica que en el modelo de la pregunta 11 rechazamos la nula dado que es menor a 0.05 y por lo tanto el modelo es significativo. Además, el F estadístico es superior a 3.6 por lo cual se confirma que el modelo de la pregunta 11 es mucho mejor al de la pregunta 10 que no cumple con ninguna de las anteriores características.
+
+### 13. Genere una regresión lineal a su gusto, que cumpla con la condición que integre una variable de *edad promedio* de las personas que asisten por semana al cine y que esta se integre de manera lineal y cuadrática (edad+ edad2) al modelo, ocupe la función de preferencia para contruirla. Además, esta regresión debe tener mayor R cuadrado que los dos modelos anteriores, respetando siempre que *assaults* sea la variable dependiente. (2 ptos)
+```{r}
+db_pregunta13 <- db_pregunta8
+
+edad <- sample(1:97,506,replace=TRUE)
+edad <- as.data.frame(edad)
+db_pregunta13 <- merge(db_pregunta13,edad)
+db_pregunta13$edad_2 <- db_pregunta13[,"edad"]*db_pregunta13[,"edad"]
+
+regr3 <- lm(assaults ~ attend_v+attend_m+edad+edad_2, data = db_pregunta13, na.action = na.omit)
+summary(regr3)
+```
+
+Podemos observar que esta regresión cuenta con un R cuadrado ajustado del 4.93% el cual es superior a las anteriores, Además de que el p valore rechaza a la nula y por lo tanto el modelo es significativo y podemos ver el doble efecto de la variable edad en los estimadores positivos y negativos respectivamente.
+
+### 14. ¿Usted cree que es correcto correr una regresión para este tipo de estructura de datos?¿Por qué si o por qué no? (1 pto)
+
+```{r}
+cat("Aplicar una regresión a estudios con datos de panel como este tiene una complejidad desde el punto de vista de los supuestos del modelo, dado que para las regresiones se busca que no exista autocorrelación en los errores y esta base de datos fue tomada a lo largo de 10 años, por lo cual no se puede descartar la presencia de autocorrelación en sus variables, es decir, que estas se expliquen a si mismas.\n\nEsta distinción se hace para los modelos de corte transversal y longitudinal, donde para los últimos se aplican modelos autorregresivos, y para los de corte transversal se usa MCO u otros en donde el tiempo no juega un rol importante.\n\nSin embargo, dado que esta base de datos no sigue a un mismo grupo de individuos tendría que testear los supuestos del modelo para saber si una regresión lineal es un buen modelo o no.\n\nDejando de lado lo anterior y analizándolo desde el punto de vista de las variables no considero que sea un buen modelo el intentar predecir el numero de asaltos o intimidaciones con la visualización de películas, dado que no existen altas correlaciones y no considero que la intuición de las variables sea lógica. Las características climáticas podrían predecir de mejor manera a la variable del estudio.
+")
+```
+
