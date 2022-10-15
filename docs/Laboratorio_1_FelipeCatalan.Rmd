@@ -101,7 +101,7 @@ library("readr")
 ### Cargar base
 
 ```{r}
-setwd("~/GitHub/Laboratorio_1")
+setwd("~/GitHub/Laboratorio_1/docs")
 db <- readxl::read_xlsx("Movies.xlsx")
 ```
 
