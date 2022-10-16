@@ -417,82 +417,6 @@ diaria entre 20° y 30 °F.</li>
 <h3>Librerías</h3>
 <p>Se presentaron problemas con ggplot2 los cuales fueron solucionados
 con este chuck</p>
-<pre class="r"><code>install.packages(&quot;rlang&quot;,
-                 repos = c(&quot;http://rstudio.org/_packages&quot;,
-                           &quot;http://cran.rstudio.com&quot;))</code></pre>
-<pre><code>## Installing package into &#39;C:/Users/felip/AppData/Local/R/win-library/4.2&#39;
-## (as &#39;lib&#39; is unspecified)</code></pre>
-<pre><code>## Warning: unable to access index for repository http://rstudio.org/_packages/bin/windows/contrib/4.2:
-##   no fue posible abrir la URL &#39;http://rstudio.org/_packages/bin/windows/contrib/4.2/PACKAGES&#39;</code></pre>
-<pre><code>## package &#39;rlang&#39; successfully unpacked and MD5 sums checked</code></pre>
-<pre><code>## Warning: cannot remove prior installation of package &#39;rlang&#39;</code></pre>
-<pre><code>## Warning in file.copy(savedcopy, lib, recursive = TRUE): problema al copiar C:
-## \Users\felip\AppData\Local\R\win-library\4.2\00LOCK\rlang\libs\x64\rlang.dll
-## a C:\Users\felip\AppData\Local\R\win-library\4.2\rlang\libs\x64\rlang.dll:
-## Permission denied</code></pre>
-<pre><code>## Warning: restored &#39;rlang&#39;</code></pre>
-<pre><code>## 
-## The downloaded binary packages are in
-##  C:\Users\felip\AppData\Local\Temp\RtmpKI7XHB\downloaded_packages</code></pre>
-<pre class="r"><code>install.packages(&quot;dplyr&quot;,
-                 repos = c(&quot;http://rstudio.org/_packages&quot;,
-                           &quot;http://cran.rstudio.com&quot;))</code></pre>
-<pre><code>## Installing package into &#39;C:/Users/felip/AppData/Local/R/win-library/4.2&#39;
-## (as &#39;lib&#39; is unspecified)</code></pre>
-<pre><code>## Warning: unable to access index for repository http://rstudio.org/_packages/bin/windows/contrib/4.2:
-##   no fue posible abrir la URL &#39;http://rstudio.org/_packages/bin/windows/contrib/4.2/PACKAGES&#39;</code></pre>
-<pre><code>## package &#39;dplyr&#39; successfully unpacked and MD5 sums checked</code></pre>
-<pre><code>## Warning: cannot remove prior installation of package &#39;dplyr&#39;</code></pre>
-<pre><code>## Warning in file.copy(savedcopy, lib, recursive = TRUE): problema al copiar C:
-## \Users\felip\AppData\Local\R\win-library\4.2\00LOCK\dplyr\libs\x64\dplyr.dll
-## a C:\Users\felip\AppData\Local\R\win-library\4.2\dplyr\libs\x64\dplyr.dll:
-## Permission denied</code></pre>
-<pre><code>## Warning: restored &#39;dplyr&#39;</code></pre>
-<pre><code>## 
-## The downloaded binary packages are in
-##  C:\Users\felip\AppData\Local\Temp\RtmpKI7XHB\downloaded_packages</code></pre>
-<pre class="r"><code>#remove.packages(&quot;rlang&quot;)
-#remove.packages(&quot;dplyr&quot;)
-
-#install.packages(&quot;rlang&quot;)
-#install.packages(&quot;dplyr&quot;)
-
-library(&quot;rlang&quot;)
-library(&quot;dplyr&quot;)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(&quot;ggplot2&quot;)
-library(&quot;ggpubr&quot;)
-library(&quot;corrplot&quot;)</code></pre>
-<pre><code>## corrplot 0.92 loaded</code></pre>
-<pre class="r"><code>library(&quot;dplyr&quot;)
-library(&quot;tidyverse&quot;)</code></pre>
-<pre><code>## ── Attaching packages
-## ───────────────────────────────────────
-## tidyverse 1.3.2 ──</code></pre>
-<pre><code>## ✔ tibble  3.1.8     ✔ purrr   0.3.5
-## ✔ tidyr   1.2.1     ✔ stringr 1.4.1
-## ✔ readr   2.1.3     ✔ forcats 0.5.2
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ purrr::%@%()         masks rlang::%@%()
-## ✖ purrr::as_function() masks rlang::as_function()
-## ✖ dplyr::filter()      masks stats::filter()
-## ✖ purrr::flatten()     masks rlang::flatten()
-## ✖ purrr::flatten_chr() masks rlang::flatten_chr()
-## ✖ purrr::flatten_dbl() masks rlang::flatten_dbl()
-## ✖ purrr::flatten_int() masks rlang::flatten_int()
-## ✖ purrr::flatten_lgl() masks rlang::flatten_lgl()
-## ✖ purrr::flatten_raw() masks rlang::flatten_raw()
-## ✖ purrr::invoke()      masks rlang::invoke()
-## ✖ dplyr::lag()         masks stats::lag()
-## ✖ purrr::splice()      masks rlang::splice()</code></pre>
-<pre class="r"><code>library(&quot;readr&quot;)</code></pre>
 </div>
 <div id="cargar-base" class="section level3">
 <h3>Cargar base</h3>
@@ -1214,11 +1138,11 @@ summary(regr3)</code></pre>
 ## 
 ## Coefficients:
 ##                            Estimate              Std. Error t value
-## (Intercept) 3396.680934932776381174   16.694077897887641626  203.47
+## (Intercept) 3396.680934932745913102   15.938363462670602999  213.11
 ## attend_v      42.755308636001302602    1.869361486043107368   22.87
 ## attend_m     114.365600355819978518    0.995354188436124332  114.90
-## edad          -0.000000000000505660    0.620218097492809428    0.00
-## edad_2         0.000000000000005138    0.005999857938209149    0.00
+## edad           0.000000000001041651    0.586957898519650412    0.00
+## edad_2        -0.000000000000009453    0.005848653636265883    0.00
 ##                        Pr(&gt;|t|)    
 ## (Intercept) &lt;0.0000000000000002 ***
 ## attend_v    &lt;0.0000000000000002 ***

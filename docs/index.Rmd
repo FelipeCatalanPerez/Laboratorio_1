@@ -39,20 +39,20 @@ La metadata es:
 
 ### Librerías
 Se presentaron problemas con ggplot2 los cuales fueron solucionados con este chuck
-```{r}
+```{r,echo=FALSE, include=FALSE}
 install.packages("rlang",
                  repos = c("http://rstudio.org/_packages",
                            "http://cran.rstudio.com"))
 
 ```
 
-```{r}
+```{r,echo=FALSE, include=FALSE}
 install.packages("dplyr",
                  repos = c("http://rstudio.org/_packages",
                            "http://cran.rstudio.com"))
 ```
 
-```{r}
+```{r,echo=FALSE, include=FALSE}
 #remove.packages("rlang")
 #remove.packages("dplyr")
 
@@ -64,7 +64,7 @@ library("dplyr")
 ```
 
 
-```{r}
+```{r,echo=FALSE, include=FALSE}
 library("ggplot2")
 library("ggpubr")
 library("corrplot")
