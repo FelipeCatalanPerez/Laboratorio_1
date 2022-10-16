@@ -16,41 +16,24 @@ El siguiente laboratorio tiene como objetivo aplicar técnicas de descripción e
 
 La metadata es:
 
-*assaults:* Número de asaltos e intimidación en Estados Unidos.
-
-*attend_v:* Asistencia a películas violentas (en millones).
-
-*attend_m:* Asistencia a películas con violencia media (en millones).
-
-*attend_n:* Asistencia a películas no violentas(en millones).
-
-*year1:* Variable dummy que indica los años de la muestra en estudio (1995-2004).
-
-*month1:* Variable dummy que indica los meses del año (enero-diciembre).
-
-*h_chris:* Variable dummy que indica el fin de semana de navidad (1 es que sí).
-
-*h_newyr:* Variable dummy que indica el fin de semana de año nuevo (1 es que sí).
-
-*h_easter:* Variable dummy que indica el fin de semana de semana santa (1 es que sí).
-
-*h_july4:* Variable dummy que indica el fin de semana del 4 de Julio (1 es que sí).
-
-*w_rain:* Franción de lugares con lluvia.
-
-*w_snow:* Franción de lugares con Nieve.
-
-*w_maxa:* Franción de lugares con una temperatura máxima diaria entre 80°F y 90°F.
-
-*w_maxb:* Franción de lugares con una temperatura máxima diaria entre 90°F y 100°F.
-
-*w_maxc:* Franción de lugares con una temperatura máxima diaria más de 100°F.
-
-*w_mina:* Franción de lugares con una temperatura mínima diaria entre 0° y 10 °F
-.
-*w_minb:* Franción de lugares con una temperatura mínima diaria entre 10° y 20 °F.
-
-*w_minc:* Franción de lugares con una temperatura mínima diaria entre 20° y 30 °F
+- *assaults:* Número de asaltos e intimidación en Estados Unidos.
+- *attend_v:* Asistencia a películas violentas (en millones).
+- *attend_m:* Asistencia a películas con violencia media (en millones).
+- *attend_n:* Asistencia a películas no violentas(en millones).
+- *year1:* Variable dummy que indica los años de la muestra en estudio (1995-2004).
+- *month1:* Variable dummy que indica los meses del año (enero-diciembre).
+- *h_chris:* Variable dummy que indica el fin de semana de navidad (1 es que sí).
+- *h_newyr:* Variable dummy que indica el fin de semana de año nuevo (1 es que sí).
+- *h_easter:* Variable dummy que indica el fin de semana de semana santa (1 es que sí).
+- *h_july4:* Variable dummy que indica el fin de semana del 4 de Julio (1 es que sí).
+- *w_rain:* Franción de lugares con lluvia.
+- *w_snow:* Franción de lugares con Nieve.
+- *w_maxa:* Franción de lugares con una temperatura máxima diaria entre 80°F y 90°F.
+- *w_maxb:* Franción de lugares con una temperatura máxima diaria entre 90°F y 100°F.
+- *w_maxc:* Franción de lugares con una temperatura máxima diaria más de 100°F.
+- *w_mina:* Franción de lugares con una temperatura mínima diaria entre 0° y 10 °F.
+- *w_minb:* Franción de lugares con una temperatura mínima diaria entre 10° y 20 °F.
+- *w_minc:* Franción de lugares con una temperatura mínima diaria entre 20° y 30 °F.
 
 ## Carga de base y librerías a utilizar
 
@@ -82,14 +65,6 @@ library("dplyr")
 
 
 ```{r}
-#install.packages("ggplot2")
-#install.packages("ggpubr")
-#install.packages("corrplot")
-#install.packages("dplyr")
-#install.packages("tidyverse")
-#install.packages("readr")
-
-
 library("ggplot2")
 library("ggpubr")
 library("corrplot")
@@ -318,19 +293,13 @@ p+scale_x_date(limits = c(min,max),breaks = seq(min,max,300),date_labels = "%Y/%
 
 Las semanas más frías serán consideradas aquellas que tengan un porcentaje sobre el 30% de una temperatura mínima diaria entre 0 y 10 F°, estas las podemos encontrar en los años 95, 97 y 2004. De esta forma utilizando la construcción de la variable fecha y el ID que se asume esta ordenado se obtiene:
 
-49 = *2ra semana de 1995-12*
-
-53 = *1era semana 1996-01*
-
-57 = *1era semana 1996-02*
-
-62 = *3era semana de 1996-03*
-
-106 = *2da semana de 1997-02*
-
-107 = *3da semana de 1997-02*
-
-474 = *última semana de 2004-01*
+- 49 = *2ra semana de 1995-12*
+- 53 = *1era semana 1996-01*
+- 57 = *1era semana 1996-02*
+- 62 = *3era semana de 1996-03*
+- 106 = *2da semana de 1997-02*
+- 107 = *3da semana de 1997-02*
+- 474 = *última semana de 2004-01*
 ```{r}
 print(db_22)
 ```
@@ -353,7 +322,7 @@ p <- ggplot(db_31,aes(x=Fecha, y =w_maxc))+
   theme_bw()+ 
   scale_y_continuous(name = "Temperaturas máximas superiores a 100 F°",
                      labels=function(x) format(x, big.mark = ".", scientific = FALSE),
-                     breaks = seq(0,0.4,0.05), lim = c(0,0.4))+
+                     breaks = seq(0,0.4,0.05), lim = c(0,0.35))+
   theme(
     legend.position="none",
     plot.title = element_text(size=20)
@@ -372,15 +341,11 @@ p+scale_x_date(limits = c(min,max),breaks = seq(min,max,300),date_labels = "%Y/%
 
 Las semanas más calurosas serán las 5 con porcentaje más alto con temperaturas máximas superiores a 100 F°. Estas las podemos encontrar en los años 95, 98, 99 y 2004. De esta forma utilizando la construcción de la variable fecha y el ID que se asume esta ordenado se obtiene:
 
-33 = *era semana 1995-08*
-
-187 = *ultima semana 1998-07*
-
-241 = *2da semana 1999-08*
-
-242 = *era semana 1999-08*
-
-399 = *penúltima semana 2002-08*
+- 33 = *era semana 1995-08*
+- 187 = *ultima semana 1998-07*
+- 241 = *2da semana 1999-08*
+- 242 = *era semana 1999-08*
+- 399 = *penúltima semana 2002-08*
 ```{r}
 print(db_32)
 ```
