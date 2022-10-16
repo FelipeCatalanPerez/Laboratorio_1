@@ -35,10 +35,7 @@ La metadata es:
 - *w_minb:* Franción de lugares con una temperatura mínima diaria entre 10° y 20 °F.
 - *w_minc:* Franción de lugares con una temperatura mínima diaria entre 20° y 30 °F.
 
-## Carga de base y librerías a utilizar
 
-### Librerías
-Se presentaron problemas con ggplot2 los cuales fueron solucionados con este chuck
 ```{r,echo=FALSE, include=FALSE}
 install.packages("rlang",
                  repos = c("http://rstudio.org/_packages",
